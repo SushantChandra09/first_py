@@ -2,17 +2,19 @@ import os
 
 # Get number of commits from the user
 try:
-    NUM_COMMITS = int(input("Enter the number of commits to create in January 2025: "))
+    NUM_COMMITS = int(input("Enter the number of commits to create (Jan 13 - Jan 28, 2025): "))
 except ValueError:
     print("Please enter a valid integer for the number of commits.")
     exit(1)
 
-year = 2025  # Fixed to January 2025
+year = 2025  
+START_DAY = 13
+END_DAY = 28
+DAYS_IN_RANGE = END_DAY - START_DAY + 1  # Total days available for commits
 
-# Distribute commits across January
-DAYS_IN_JANUARY = 28  # Only using days 1-28 to ensure validity
-COMMITS_PER_DAY = max(1, NUM_COMMITS // DAYS_IN_JANUARY)  # At least 1 per day
-EXTRA_COMMITS = NUM_COMMITS % DAYS_IN_JANUARY  # Remaining commits to distribute
+# Distribute commits evenly across Jan 13 - Jan 28
+COMMITS_PER_DAY = max(1, NUM_COMMITS // DAYS_IN_RANGE)  
+EXTRA_COMMITS = NUM_COMMITS % DAYS_IN_RANGE  # Handle extra commits
 
 # Create a file for dummy commits
 file_path = 'test.txt'
@@ -21,10 +23,11 @@ with open(file_path, 'a') as file:
 os.system('git add test.txt')
 os.system('git commit -m "Initial commit"')
 
-commit_count = 0  # Track total commits
+commit_count = 0  
 
-for day in range(1, DAYS_IN_JANUARY + 1):  # Loop from Jan 1 to Jan 28
-    commits_today = COMMITS_PER_DAY + (1 if day <= EXTRA_COMMITS else 0)  # Distribute extra commits
+for day in range(START_DAY, END_DAY + 1):  # Loop from Jan 13 to Jan 28
+    commits_today = COMMITS_PER_DAY + (1 if day - START_DAY < EXTRA_COMMITS else 0)  # Distribute extra commits
+
     for _ in range(commits_today):
         if commit_count >= NUM_COMMITS:
             break
